@@ -1,0 +1,30 @@
+{if !isset($Valor) || $Valor == ''}
+   {$Valor = ''}
+   
+   {if isset($Campo.Default)}
+      {$Valor = $Campo.Default}
+   {/if}
+{/if}
+
+{if $Browse == '1'}
+   {* Formata valor para apresentação *}
+   {if $Valor == 't' ||
+       $Valor == 'true'}
+      SIM
+   {else if $Valor == 'f' ||
+            $Valor == 'false'}
+      NAO
+   {else}
+      &nbsp;
+   {/if}
+{else}
+   {if $Disabled != ''}
+      {$Disabled = 'disabled="disabled"'}
+   {/if}
+   <select name='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$Array}' autocomplete="off" id='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$Array}' value='{$Valor}' {$Disabled} {$Campo.NotNull}>
+      {if $Campo.NotNull != 'required'}<option value='' {if $Valor == ''}selected="selected"{/if}>* Selecione</option>{/if}
+      <option value='t' {if $Valor == 't' || $Valor == 'true'}selected="selected"{/if}>Sim</option>
+      <option value='f' {if $Valor == 'f' || $Valor == 'false'}selected="selected"{/if}>Não</option>
+   </select>
+
+{/if}

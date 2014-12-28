@@ -1,0 +1,45 @@
+{if !isset($Valor) || $Valor == ''}
+   {$Valor = ''}
+   
+   {if isset($Campo.Default)}
+      {$Valor = $Campo.Default}
+   {/if}
+{/if}
+
+{if $Browse == '1'}
+   {$res}
+{else}
+{if isset($Campo.ResInfo) || isset($Campo.FKres)}
+
+   <script type="text/javascript">
+
+	   {if isset($Campo.FKres)}
+	       var obj = {json_encode($Campo.FKres)};
+	       localStorage.setItem('FK_{$Aplicativo}_{$Tabela}_{$Campo.Nome}', JSON.stringify(obj) );
+	   
+      {/if}
+	       
+	   {if isset($Campo.ResInfo)}
+
+	      var obj = {$Campo.ResInfo};
+         localStorage.setItem('FK_' + obj.ChaveEstrangeiraId, JSON.stringify(obj) );
+
+      {/if}
+
+   </script>
+{/if} 
+
+{if $Disabled != ''}
+   {$Disabled = 'disabled="disabled"'}
+{/if}
+
+ <select class='ForeingKey' name='{$Aplicativo}_{$Tabela}_{$Campo.Nome}{$Array}' autocomplete="off" id='{$Aplicativo}_{$Tabela}_{$Campo.Nome}{$Array}' value='{$Valor}' {$Disabled} {$Campo.NotNull}>
+    <option value=''>* Selecione</option>
+    {if isset($Campo.resolution)}
+       {foreach $Campo.resolution.Resolved.resolved as $resfk}
+          <option value='{$resfk.Id}' {if $resfk.Id == $Valor}selected=selected{/if}>{$resfk.Resolutor}</option>
+       {/foreach}
+    {/if}
+ </select>
+	   
+{/if}

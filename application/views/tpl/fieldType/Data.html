@@ -1,0 +1,34 @@
+{if !isset($Valor) || $Valor == ''}
+   {$Valor = ''}
+
+   {if isset($Campo.Default)}
+
+      {if $Campo.Default == 'now()' || $Campo.Default == 'NOW()'}
+
+         {$Valor = $smarty.now|date_format:"%d/%m/%Y"}
+      
+      {else}
+
+         {$Valor = $Campo.Default}
+      {/if}
+   {/if}
+{/if}
+
+{if $Browse == '1'}
+   {* Formata valor para apresentação *}
+   {$Valor = $Valor|date_format:"%d/%m/%Y"}
+   {$Valor}
+{else}
+
+	{if $Campo.NotNull == 'f'}
+	   {$Campo.NotNull = ''}
+	{else}
+	   {$Campo.NotNull = 'required'}
+	{/if}
+
+   {if $Disabled != ''}
+      {$Disabled = 'disabled="disabled"'}
+   {/if}
+
+   <input class='Date' type='text' name='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$Array}' id='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$Array}' value='{$Valor}' {$Disabled} {$Campo.NotNull}>
+{/if}

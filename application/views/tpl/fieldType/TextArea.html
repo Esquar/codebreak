@@ -1,0 +1,16 @@
+{if !isset($Valor) || $Valor == ''}
+   {$Valor = ''}
+{/if}
+
+{if $Browse == '1'}
+   {* Formata valor para apresentação *}
+   {$Valor|replace:"\n":"<br>"}
+{else}
+
+   {if $Disabled != ''}
+      {$Disabled = 'disabled="disabled"'}
+   {/if}
+
+   <textarea name='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$Array}' id='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$Array}' value='{$Valor}' {$Disabled} {$Campo.NotNull}>{$Valor}</textarea>
+
+{/if}

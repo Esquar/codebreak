@@ -1,0 +1,130 @@
+
+{include file="Head.html" scope=parent}
+
+{include file="Menu.html" scope=parent}
+
+<section id='listagem'>
+<div class='page-header'>
+<h2>{$comp.Descricao}</h2>
+</div>
+
+{include file="MenuAction.html" scope=parent}
+<form action='{$BaseURL}controller/Acesso/{$ClassId}/Browse' method='post'>
+<table style="empty-cells:show;width:100%;" class='table table-hover'>
+
+{foreach from=$row key=k item=v name=lista}
+
+   {if $smarty.foreach.lista.first}
+      <thead>
+	      <tr>
+	         {* Reestrutura a compilação, montando o índice do array como o nome do campo *}
+	         {$recomp = []}
+	         {foreach from=$comp.Campo key=lk item=lv name=chaves}
+
+	           {* neste momento, monto o array da compilação deste campo *}
+	           {$recomp[$lv.Nome] = $lv}
+	           {if $lv.Exibicao != 3}
+		         <th>
+		            {$lv.Descricao}
+		         </th>
+	           {/if}
+	         {/foreach}
+	         <th>
+              &nbsp;
+            </th>
+	      </tr>
+	      <tr>
+            {foreach from=$comp.Campo key=lk item=lv name=chaves}
+            {if $lv.Exibicao != 3}
+            <th>
+               {$value = ''}
+               {if isset($where)}
+	               {if isset($where[$lv.Nome])}
+	                  {$value = $where[$lv.Nome]}
+	               {else}
+	                  {$value = ''}
+	               {/if}
+               {/if}
+               <input type='text' name='{$lv.Nome}' id='{$lv.Nome}' value='{$value}' style='min-width:30px;width:90%;'>
+            </th>
+            {/if}
+            {/foreach}
+            <th style='vertical-align:middle;'>
+              <input type='submit' class='btn btn-primary' value='Busca'>
+            </th>
+         </tr>
+      </thead>
+      <tbody>
+   {/if}
+   <tr>
+   {$primary = ''}
+
+   {foreach from=$v key=lk item=lv name=valores}
+   
+      {if substr($lv.key, 0, 3) == '_r_'}
+         {continue}
+      {/if}
+
+      {if substr($lv.key, 0, 3) == '_v_'}
+	      {$size = $lv.key|strlen}
+	      {$key = substr($lv.key, 3, $size)}
+      {else}
+         {$key = $lv.key}
+      {/if}
+      
+      {$value = $lv.value}
+      
+      {if isset($lv.resolutor)}
+         {$res = $lv.resolutor}
+      {else}
+         {$res = $value}
+      {/if}
+
+      {if $recomp[$key].Exibicao != 3}
+      <td>
+         {include file="fieldType/Campo.html" Campo=$recomp[$key] Browse=1 Valor=$value Res=$res}
+      </td>
+      {/if}
+
+      {if isset($pkey.$key )}
+         {$primary = $primary|cat:$key|cat:'='|cat:$value|cat:'&'}
+      {/if}
+   {/foreach}
+	   <td style='white-space:nowrap;'>
+	     {if $primary != ''}
+	     <a class="btn" href="/controller/Acesso/{$ClassId}/Select?{$primary}" title='Detalhes'><i class="icon-cog"></i></a>
+	     <a class="btn" href="/controller/Acesso/{$ClassId}/Update?{$primary}" title='Editar'><i class="icon-edit"></i></a>
+	     <a class="btn" href="/controller/Acesso/{$ClassId}/Delete?{$primary}" title='Excluir'><i class="icon-remove"></i></a>
+	     {/if}
+	   </td>
+   </tr>
+{foreachelse}
+<thead>
+   <tr>
+      {$contador = 0}
+      {foreach from=$comp.Campo key=lk item=lv name=chaves}
+      {if $lv.Exibicao != 3}
+      {$contador = $contador + 2}
+      <th>
+         {$lv.Descricao}
+      </th>
+      <th>
+         &nbsp;
+      </th>
+      {/if}
+      {/foreach}
+   </tr>
+</thead>
+<tbody>
+   <tr>
+      <td colspan={$contador}>
+         Nenhum registro encontrado
+      </td>
+   </tr>
+{/foreach}
+</tbody>
+</table>
+</form>
+</section>
+{include file="Footer.html" scope=parent}
+

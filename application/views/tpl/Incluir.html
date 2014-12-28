@@ -1,0 +1,78 @@
+
+{include file="Head.html" scope=parent}
+
+{include file="Menu.html" scope=parent}
+
+<section id='inclusao'>
+<div class='page-header'>
+<h2>{$comp.Descricao}</h2>
+</div>
+
+{include file="MenuAction.html" scope=parent}
+
+<form method="post" action="{$BaseURL}controller/Executar/" class="form-horizontal">
+
+   <input type="hidden" name="Acao" id="Acao" value="Incluir">
+
+   <input type="hidden" name="MasterSchemaId"   id="MasterSchemaId"  value="{$comp.AplicativoNome}">
+   <input type="hidden" name="MasterTableId"    id="MasterTableId"   value="{$comp.Nome}">
+
+	<ul class="nav nav-tabs">
+	   <li class="active">
+	      <a href="#" id='div_primary'>Inclusão</a>
+	   </li>
+
+	   {* Monta as abas com as foreign keys relacionais *}
+	   {foreach from=$fkey key=k item=v name=fk}
+	   <li>
+	      <a href="#" id='div_{$v.FKeyDesc}'>{$v.Descricao}</a>
+	   </li>
+	   {/foreach}
+	</ul>
+
+   {* Monta a div primaria *}
+   <div class="nav-div active" id='rel_div_primary'>
+
+		{foreach from=$comp.Campo key=k item=v name=inclusao}
+
+		   {if $v.Exibicao == 1 || $v.Exibicao == 3}		      
+            {include file="fieldType/Campo.html" Campo=$v Aplicativo=$comp.AplicativoNome Tabela=$comp.Nome}
+         {/if}
+
+		{/foreach}
+
+   </div>
+
+   {* Monta as divs das foreign keys relacionais *}
+   {foreach from=$fkey key=chave item=valor name=fk}
+      <div class="nav-div" id='rel_div_{$valor.FKeyDesc}'>
+         <button class="btn btn-large btn-block" type="button" onclick="addAppend(this, '{$valor.FKeyDesc}')">Clique para adicionar</button>
+      </div> 
+   {/foreach}
+
+   <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Salvar</button>
+      <button type="reset" class="btn">Cancelar</button>
+   </div>
+</form>
+
+{foreach from=$fkey key=chave item=valor name=fk}
+   <div style='display:none' id='{$valor.FKeyDesc}' name='{$valor.FKeyDesc}'>
+      <div>
+	{foreach from=$valor.Campo key=k item=v name=inclusao}
+
+	   {if $v.Exibicao == 1 || $v.Exibicao == 3}
+         {include file="fieldType/Campo.html" Campo=$v Aplicativo=$valor.AplicativoNome Tabela=$valor.Nome Array=1}
+      {/if}
+
+	{/foreach}
+
+      <img onclick="duplica(this); return false;" class="icon-plus" style='cursor:pointer'>
+      <img onclick="remover(this, '{$valor.FKeyDesc}'); return false;" class="icon-ban-circle" style='cursor:pointer'>
+      </div>
+	</div>
+{/foreach}
+
+</section>
+{include file="Footer.html" scope=parent}
+

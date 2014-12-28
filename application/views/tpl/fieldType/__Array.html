@@ -1,0 +1,67 @@
+
+{if !isset($Valor)}
+   {$Valor = ''}
+{/if}
+
+{$array = '[]'}
+
+{if isset($Browse)}
+   {* Formata valor para apresentação *}
+
+   {$pgsqlArr = $Valor}
+   {$a = preg_match('/^{(.*)}$/', $pgsqlArr, $matches)}
+
+   {if isset($matches[1])}
+
+	   {$field = str_getcsv($matches[1])}
+
+	   {$string = ''}
+
+	   {foreach from=$field item=val}
+
+	      {if $string != ''}
+	         {$string = $string|cat:', '}
+	      {/if}
+
+	      {$string = $string|cat:$val}
+	   {/foreach}
+	   
+	   {$string}
+	   
+   {else}
+      &nbsp;
+   {/if}
+{else}
+
+	{if $Campo.NotNull == 'f'}
+	   {$Campo.NotNull = ''}
+	{else}
+	   {$Campo.NotNull = 'required'}
+	{/if}
+	<div class="control-group">
+	   <label class="control-label" for="div{$Campo.Nome}">{$Campo.Descricao}</label>
+	      {$pgsqlArr = $Valor}
+         {$a = preg_match('/^{(.*)}$/', $pgsqlArr, $matches)}
+         {if isset($matches[1])}
+
+				{$field = str_getcsv($matches[1])}
+				
+				{$string = ''}
+				
+				{foreach from=$field item=val}
+				   <div class="controls" id='div{$Campo.Nome}'>
+						<input class='{$Campo.Handler}' type='text' name='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$array}' id='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$array}' value='{$val}' {$Campo.NotNull}>
+						<img onclick="duplica(this); return false;" class="icon-plus" style='cursor:pointer;'>
+						<img onclick="removerArray(this); return false;" class="icon-ban-circle" style='cursor:pointer;'>
+               </div>
+            {/foreach}
+         {else}
+            <div class="controls" id='div{$Campo.Nome}'>
+	            <input class='{$Campo.Handler}' type='text' name='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$array}' id='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$array}' value='' {$Campo.NotNull}>
+	            <img onclick="duplica(this); return false;" class="icon-plus" style='cursor:pointer;'>
+	            <img onclick="removerArray(this); return false;" class="icon-ban-circle" style='cursor:pointer;'>
+            </div>
+         {/if}
+   </div>
+
+{/if}

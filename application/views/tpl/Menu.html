@@ -1,0 +1,30 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+   <div class="navbar-inner">
+      <div class="container" style='width:98%'>
+         <a href="{$BaseURL}controller/Index" class="brand">CodeBreak</a>
+         <div class="nav-collapse collapse">
+            <ul class="nav">
+               {foreach from=$Menu key=k item=v}
+               <li class="dropdown">
+                  <a data-toggle="dropdown" class="dropdown-toggle" href="#">{$v.Descricao} <b class="caret"></b></a>
+	               <ul class="dropdown-menu">
+	                  {foreach from=$v.Table key=mk item=mv}
+	                      {if $mk != 'Descricao'}
+	                          <li><a href="{$BaseURL}controller/Acesso/{$k}.{$mk}">{$mv}</a></li>
+                         {/if}
+	                  {/foreach}
+	               </ul>
+               </li>
+               {/foreach}
+            </ul>
+            <ul class="nav pull-right">
+               <li><a href="{$BaseURL}controller/Logout">Logout</a></li>
+               {if $userLevel == '1'}
+               <li><a href="{$BaseURL}controller/Acesso/Compilar">Compilar</a></li>
+               {/if}
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+<br>

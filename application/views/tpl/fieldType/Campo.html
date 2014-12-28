@@ -1,0 +1,102 @@
+
+{if !isset($Valor)}
+   {$Valor = ''}
+{/if}
+
+{if !isset($res)}
+   {$res = ''}
+{/if}
+
+{if !isset($Disabled)}
+   {$Disabled = ''}
+{/if}
+
+{* $filename = 'C:/wamp/www/CodeBreak/application/views/tpl/fieldType/'|cat:$Campo.Handler|cat:'.html' *}
+{* if !file_exists($filename) *}
+{if $Campo.Handler == ''}
+   {$filename = "fieldType/Text.html"}
+{else}
+   {if $Campo.Handler != 'serial'}
+      {$filename = "fieldType/"|cat:$Campo.Handler|cat:".html"}
+   {else}
+      {$filename = "fieldType/Text.html"}
+   {/if}
+{/if}
+
+{if !isset($Browse)}
+   {$Browse = '0'}
+{/if}
+
+{if $Browse == '1'}
+   {* Formata valor para apresentação *}
+
+   {if $Campo.Array == '1'}
+
+	   {$pgsqlArr = $res}
+
+	   {$a = preg_match('/^{(.*)}$/', $pgsqlArr, $matches)}
+	
+	   {if isset($matches[1])}
+
+	      {$field = str_getcsv($matches[1])}
+
+         <ul>
+	      {foreach from=$field item=val name=campoArray}
+
+            <li>
+            {include file=$filename Campo=$Campo Valor=$val res=$val Browse='1'}
+            </li>
+
+	      {/foreach}
+	      </ul>
+
+	   {else}
+	      &nbsp;
+	   {/if}
+   {else}
+      {include file=$filename Campo=$Campo Valor=$Valor Res=$res Browse=1}
+   {/if}
+{else}
+
+   {if $Campo.Handler != 'serial'}
+	
+	   <div class="control-group">
+	      <label class="control-label" for="div{$Campo.Nome}">{$Campo.Descricao}</label>
+	
+	         {if $Campo.Array == '1'}
+		         {$pgsqlArr = $Valor}
+		         {$a = preg_match('/^{(.*)}$/', $pgsqlArr, $matches)}
+		         {if isset($matches[1])}
+		
+		            {$field = str_getcsv($matches[1])}
+	
+		            {foreach from=$field item=val}
+	
+	                  <div class="controls" id='div{$Campo.Nome}'>
+						      {include file=$filename Campo=$Campo Valor=$val Res=$res Array='[]' Browse='0' Disabled=$Disabled}
+		                  <img onclick="duplica(this); return false;" class="icon-plus" style='cursor:pointer;'>
+		                  <img onclick="removerArray(this); return false;" class="icon-ban-circle" style='cursor:pointer;'>
+		               </div>
+		            {/foreach}
+		         {else}
+		            <div class="controls" id='div{$Campo.Nome}'>
+		              {include file=$filename Campo=$Campo Valor=$Valor Res=$res Array='[]' Browse='0' Disabled=$Disabled}
+		               <img onclick="duplica(this); return false;" class="icon-plus" style='cursor:pointer;'>
+		               <img onclick="removerArray(this); return false;" class="icon-ban-circle" style='cursor:pointer;'>
+		            </div>
+		         {/if}
+	         {else}
+	            <div class="controls" id='div{$Campo.Nome}'>
+	               {if !isset($Array)}
+	                  {$Array = ''}
+	               {else}
+	                  {* Quando é uma tabela ebutida, mesmo o campo não sendo array, deve montar com []*}
+	                  {$Array = '[]'}
+	               {/if}
+				      {include file=$filename Campo=$Campo Valor=$Valor Res=$res Array=$Array Browse='0' Disabled=$Disabled}
+				   </div>
+	         {/if}
+	   </div>
+   {/if}
+
+{/if}

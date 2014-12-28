@@ -1,0 +1,25 @@
+{if !isset($Valor) || $Valor == ''}
+   {$Valor = ''}
+   
+   {if isset($Campo.Default)}
+      {$Valor = $Campo.Default}
+   {/if}
+{/if}
+
+{if $Browse == '1'}
+   {* Formata valor para apresentação *}
+   {$Valor}
+{else}
+
+	{if $Campo.NotNull == 'f'}
+	   {$Campo.NotNull = ''}
+	{else}
+	   {$Campo.NotNull = 'required'}
+	{/if}
+
+   {if $Disabled != ''}
+      {$Disabled = 'disabled="disabled"'}
+   {/if}
+
+   <input class='Number' type='text' name='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$Array}' id='{$Aplicativo}.{$Tabela}.{$Campo.Nome}{$Array}' value='{$Valor}' {$Disabled} {$Campo.NotNull}>
+{/if}

@@ -1,0 +1,78 @@
+
+{include file="Head.html" scope=parent}
+
+{include file="Menu.html" scope=parent}
+
+<section id='inclusao'>
+<div class='page-header'>
+<h2>{$comp.Descricao}</h2>
+</div>
+
+{include file="MenuAction.html" scope=parent}
+
+<form method="post" action="{$BaseURL}controller/Executar/" class="form-horizontal">
+
+<input type="hidden" name="Acao" id="Acao" value="Atualizar">
+
+<input type="hidden" name="MasterSchemaId"   id="MasterSchemaId"  value="{$comp.AplicativoNome}">
+<input type="hidden" name="MasterTableId"    id="MasterTableId"   value="{$comp.Nome}">
+
+
+{foreach from=$row key=k item=v name=lista}
+
+   {foreach from=$v key=lk item=lv name=lista}
+      {if substr($lv.key, 0, 3) == '_r_'}
+         {continue}
+      {/if}
+
+      {if substr($lv.key, 0, 3) == '_v_'}
+         {$size = $lv.key|strlen}
+         {$key = substr($lv.key, 3, $size)}
+      {else}
+         {$key = $lv.key}
+      {/if}
+
+      {$value = $lv.value}
+
+      {if isset($lv.resolutor)}
+         {$res = $lv.resolutor}
+      {else}
+         {$res = $value}
+      {/if}
+
+      {$desc = ''}
+      {if isset($pkey.$key)}
+         {* Sendo um elemento da PK, monta desabilitado, pois ele é necessário para efetuar o update, mas não pode ser alterado *}
+         {* Mesmo assim, monta o campo hidden, para poder submeter o formulário *}
+         <input type='hidden' name='{$key}' id='{$key}' value='{$value}'>         
+         {$disabled = 'disabled'}
+      {else}
+         {$disabled = ''}
+      {/if}
+
+
+      {foreach from=$comp.Campo key=ck item=cv name=chaves}
+
+         {if $key == $cv.Nome}
+            {* Achou a compilação correspondente ao campo percorrido.*}
+
+		      {* Importa o arquivo manipulador *}
+
+			   {if $cv.Exibicao == 1}
+
+		         {include file="fieldType/Campo.html" Campo=$cv Valor=$value res=$res Aplicativo=$comp.AplicativoNome Tabela=$comp.Nome Browse='0' Disabled=$disabled}
+			   {/if}
+         {/if}
+
+      {/foreach}
+   {/foreach}
+   
+{/foreach}
+
+   <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Salvar</button>
+   </div>
+</form>
+</section>
+{include file="Footer.html" scope=parent}
+

@@ -1,0 +1,70 @@
+
+{include file="Head.html" scope=parent}
+
+{include file="Menu.html" scope=parent}
+
+<section id='inclusao'>
+<div class='page-header'>
+<h2>{$comp.Descricao}</h2>
+</div>
+<form method="post" action="{$BaseURL}controller/Executar/" class="form-horizontal">
+{include file="MenuAction.html" scope=parent}
+
+{foreach from=$row key=k item=v name=lista}
+
+   {$primary = ''}
+
+
+   {foreach from=$v key=lk item=lv name=valores}
+
+      {if substr($lv.key, 0, 3) == '_r_'}
+         {continue}
+      {/if}
+
+      {if substr($lv.key, 0, 3) == '_v_'}
+         {$size = $lv.key|strlen}
+         {$key = substr($lv.key, 3, $size)}
+      {else}
+         {$key = $lv.key}
+      {/if}
+      
+      {$value = $lv.value}
+      
+      {if isset($lv.resolutor)}
+         {$res = $lv.resolutor}
+      {else}
+         {$res = $value}
+      {/if}
+
+	   {$desc = ''}
+	   {* Reestrutura a compilação, montando o índice do array como o nome do campo *}
+      {$recomp = []}
+
+	   {foreach from=$comp.Campo key=ck item=cv name=chaves}
+
+	      {$recomp[$cv.Nome] = $cv}
+
+	      {if $key == $cv.Nome}
+	        {$desc = $cv.Descricao}
+	      {/if}
+	   {/foreach}
+      <div class="control-group">
+	      <label class="control-label" for="{$lk}">{$desc}:</label>
+	      <div class="controls" id='{$lk}'>
+            {include file="fieldType/Campo.html" Campo=$recomp[$key] Browse=1 Valor=$value Res=$res}
+	      </div>
+	   </div>
+	   {if isset($pkey.$key)}
+         {$primary = $primary|cat:$key|cat:'='|cat:$value|cat:'&'}
+      {/if}
+   {/foreach}
+   
+{/foreach}
+   <div class="form-actions">
+	   <a class="btn" href="{$BaseURL}controller/Acesso/{$ClassId}/Update?{$primary}" title='Editar'><i class="icon-edit"></i> Editar</a>
+	   <a class="btn" href="{$BaseURL}controller/Acesso/{$ClassId}/Delete?{$primary}" title='Excluir'><i class="icon-remove"></i> Excluir</a>
+   </div>
+</form>
+</section>
+{include file="Footer.html" scope=parent}
+
